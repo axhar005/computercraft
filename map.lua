@@ -16,6 +16,7 @@ m.setTextScale(1)
 
 function draw_area()
     for i = 1, #data.rooms do
+        print(data.rooms[i].lpos.x)
         paintutils.drawBox(data.rooms[i].lpos.x - map_origin.x, data.rooms[i].lpos.z - map_origin.z, data.rooms[i].x - map_origin.x, data.rooms[i].z - map_origin.z, colors.green)
     end
 end
@@ -32,7 +33,6 @@ end
 
 function get_data()
     local sender_id, message, protocol_distance = rednet.receive("lights_dispacher_440")
-    print(sender_id)
     if (sender_id == 24) then
         data = {phones = message[1], rooms = message[2]}
     end
