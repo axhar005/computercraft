@@ -4,7 +4,7 @@ local old_term = term.redirect(m)   -- redirect term to a screen
 
 -- need to be set
 local center_origin = {x = 130, y = 60, z = 684}    -- the middle of the base
-local map_len = 80                                  -- square base size in x and z
+local map_len = 160                                 -- square base size in x and z
 
 -- variable
 local layer = {y_min = 0, y_max = 0}                                                                                    -- floor layer between y_min and y_max
@@ -18,7 +18,7 @@ local cal_z = height/map_len                                                    
 
 -- set window
 m.setCursorPos(1, 1)
-m.setTextScale(1)
+m.setTextScale(0.5)
 m.setTextColor(colors.orange)
 
 
@@ -41,12 +41,14 @@ function draw_area()
     end
     for i = 1, #data.phones do
         paintutils.drawPixel(((data.phones[i][2].x - map_origin.x) * cal_x) * -1, ((data.phones[i][2].z - map_origin.z) * cal_z) * -1, colors.pink)
+        m.setCursorPos(((data.phones[i][2].x - map_origin.x) * cal_x) * -1, (((data.phones[i][2].z - map_origin.z) * cal_z) * -1) - 1)
+        m.write(data.phones[i][1])
     end
 end 
 
 function clear_window()
     m.setCursorPos(1, 1)
-    m.setTextScale(1)
+    m.setTextScale(0.5)
     m.setBackgroundColor(colors.black)
     m.clear()
 end
