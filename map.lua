@@ -17,7 +17,10 @@ m.setTextScale(1)
 function draw_area()
     for i = 1, #data.rooms do
         print(data.rooms[i].lpos.x - map_origin.x)
-        paintutils.drawBox(data.rooms[i].lpos.x + map_origin.x, data.rooms[i].lpos.z + map_origin.z, data.rooms[i].x + map_origin.x, data.rooms[i].z + map_origin.z, colors.green)
+        print(data.rooms[i].lpos.z - map_origin.z)
+        print(data.rooms[i].x - map_origin.x)
+        print(data.rooms[i].z - map_origin.z)
+       -- paintutils.drawBox(data.rooms[i].lpos.x - map_origin.x, data.rooms[i].lpos.z - map_origin.z, data.rooms[i].x - map_origin.x, data.rooms[i].z - map_origin.z, colors.green)
     end
 end 
 
