@@ -16,7 +16,8 @@ m.setTextScale(5)
 
 function draw_area()
     for i = 1, #data.rooms do
-        paintutils.drawBox(data.rooms[i].x*cal_x, data.rooms[i].y*cal_y, data.rooms[i].lpos.x*cal_x, data.rooms[i].lpos.y*cal_y, colors.green)
+        paintutils.drawBox((data.rooms[i].lpos.x - map_origin.x)*cal_x, (data.rooms[i].lpos.y - map_origin.y)*cal_y, 
+        (data.rooms[i].x - map_origin.x)*cal_x, (data.rooms[i].y - map_origin.y)*cal_y, colors.green)
     end
 end
 
@@ -31,7 +32,7 @@ function is_in_area(playerPos, rectCorner1, rectCorner2)
 end
 
 function get_data()
-    local sender_id, reply, message, protocol_distance = rednet.receive("lights_dispacher_440")
+    local sender_id, message, protocol_distance = rednet.receive("lights_dispacher_440")
     if (sender_id == 24) then
         data = {phones = message[1], rooms = message[2]}
     end
