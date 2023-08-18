@@ -9,16 +9,11 @@ local map_origin = {x = 130 + map_len/2, y = 60, z = 684 + map_len/2}
 local m = peripheral.wrap("right")
 local old_term = term.redirect(m)
 local width, height = m.getSize()
-local cal_x = width/(center_origin.x - (map_len/2))
-local cal_y = height/(center_origin.y - (map_len/2))
+local cal_x = width/map_len
+local cal_z = height/map_len
 m.setCursorPos(1, 1)
 m.setTextScale(1)
-
-function draw_area()
-    for i = 1, #data.rooms do
-        paintutils.drawBox((data.rooms[i].lpos.x - map_origin.x) * -1, (data.rooms[i].lpos.z - map_origin.z) * -1, (data.rooms[i].x - map_origin.x) * -1, (data.rooms[i].z - map_origin.z) * -1, colors.green)
-    end
-end 
+m.setTextColor(colors.orange)
 
 function is_in_area(playerPos, rectCorner1, rectCorner2)
     return
@@ -30,6 +25,24 @@ function is_in_area(playerPos, rectCorner1, rectCorner2)
         playerPos.y <= math.max(rectCorner1.y, rectCorner2.y)
 end
 
+function draw_area()
+    for i = 1, #data.rooms do
+        paintutils.drawBox(((data.rooms[i].lpos.x - map_origin.x) * cal_x) * -1, ((data.rooms[i].lpos.z - map_origin.z) * cal_z) * -1, ((data.rooms[i].x - map_origin.x)* cal_x) * -1, ((data.rooms[i].z - map_origin.z)* cal_z) * -1, colors.green)
+        m.setCursorPos(((data.rooms[i].lpos.x - map_origin.x) * cal_x) * -1, ((data.rooms[i].lpos.z - map_origin.z) * cal_z) * -1)
+        m.write(data.rooms[i].name)
+    end
+    for i = 1, #data.phones do
+        paintutils.drawPixel(((data.phones[i][2].x - map_origin.x) * cal_x) * -1, ((data.phones[i][2].z - map_origin.z) * cal_z) * -1, colors.pink)
+    end
+end 
+
+function clear_window()
+    m.setCursorPos(1, 1)
+    m.setTextScale(1)
+    m.setBackgroundColor(colors.black)
+    m.clear()
+end
+
 function get_data()
     local sender_id, message, protocol_distance = rednet.receive("lights_dispacher_440")
     if (sender_id == 24) then
@@ -39,6 +52,6 @@ end
 
 while true do
     get_data()
+    clear_window()
     draw_area()
-
 end
