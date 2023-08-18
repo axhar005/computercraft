@@ -1,18 +1,22 @@
 rednet.open("side")
-local layer = 0
+local layer = {y_max = 0, x_max = 0}
 local data_phones = {{0,{x = 0, y = 0, z = 0}}}
 local data_rooms = {{x = 0, y = 0, z = 0, autorized = nil, receiver_id = 0, name = "", lpos = {x = 0, y = 0, z = 0}}}
 local data = {phones = data_phones, rooms = data_rooms}
-local pos = {x = 0, y = 0, z = 0}
+local map_len = 80
+local center_origin = {x = 130, y = 60, z = 684}
+local map_origin = {x = 130 + map_len/2, y = 60, z = 684 + map_len/2}
 local m = peripheral.wrap("top")
 local old_term = term.redirect(m)
 local width, height = m.getSize()
-m.setTextScale(5)
+local cal_x = width/(center_origin.x - (map_len/2))
+local cal_y = height/(center_origin.y - (map_len/2))
 m.setCursorPos(1, 1)
+m.setTextScale(5)
 
 function draw_area()
     for i = 1, #data.rooms do
-        paintutils.drawBox
+        paintutils.drawBox(data.rooms[i].x*cal_x, data.rooms[i].y*cal_y, data.rooms[i].lpos.x*cal_x, data.rooms[i].lpos.y*cal_y, colors.green)
     end
 end
 
@@ -35,5 +39,6 @@ end
 
 while true do
     get_data()
+    draw_area()
 
 end
