@@ -1,5 +1,5 @@
-rednet.open("back")                 -- open rednet
-local m = peripheral.wrap("right")  -- connect to the "side" minitor
+rednet.open("left")                 -- open rednet
+local m = peripheral.wrap("back")  -- connect to the "side" minitor
 local old_term = term.redirect(m)   -- redirect term to a screen
 
 -- need to be set
@@ -15,6 +15,15 @@ local map_origin = {x = 130 + map_len/2, y = 60, z = 684 + map_len/2}           
 local width, height = m.getSize()                                                                                       -- window size
 local cal_x = width/map_len                                                                                             -- ratio size in x
 local cal_z = height/map_len                                                                                            -- ratio size in z
+local col = {
+    colors.orange,
+    colors.blue,
+    colors.brown,
+    colors.purple,
+    colors.cyan,
+    colors.pink,
+    colors.magenta
+}
 
 -- set window
 m.setCursorPos(1, 1)
@@ -33,16 +42,31 @@ function is_in_area(playerPos, rectCorner1, rectCorner2)
         playerPos.y <= math.max(rectCorner1.y, rectCorner2.y)
 end
 
+function draw_centered_text(x, y, text, textColor, backgroundColor)
+    local textWidth = #text
+    local startX = x - math.floor(textWidth / 2)
+    m.setCursorPos(startX, y)
+    m.setTextColor(textColor)
+    m.setBackgroundColor(backgroundColor)
+    m.write(text)
+end
+
+
 function draw_area()
     for i = 1, #data.rooms do
-        paintutils.drawBox(((data.rooms[i].lpos.x - map_origin.x) * cal_x) * -1, ((data.rooms[i].lpos.z - map_origin.z) * cal_z) * -1, ((data.rooms[i].x - map_origin.x)* cal_x) * -1, ((data.rooms[i].z - map_origin.z)* cal_z) * -1, colors.green)
-        m.setCursorPos(((data.rooms[i].lpos.x - map_origin.x) * cal_x) * -1, ((data.rooms[i].lpos.z - map_origin.z) * cal_z) * -1)
-        m.write(data.rooms[i].name)
+        local posX = ((data.rooms[i].lpos.x - map_origin.x) * cal_x) * -1
+        local posZ = ((data.rooms[i].lpos.z - map_origin.z) * cal_z) * -1
+        local posXX = ((data.rooms[i].x - map_origin.x)* cal_x) * -1
+        local posZZ = ((data.rooms[i].z - map_origin.z)* cal_z) * -1
+        local text = data.rooms[i].name
+        paintutils.drawBox(posX, posZ, posXX, posZZ, colors.green)
+        draw_centered_text(posX - ((posX - posXX) / 2), posZ + 1, text, colors.white, colors.lime)
     end
     for i = 1, #data.phones do
-        paintutils.drawPixel(((data.phones[i][2].x - map_origin.x) * cal_x) * -1, ((data.phones[i][2].z - map_origin.z) * cal_z) * -1, colors.pink)
-        m.setCursorPos(((data.phones[i][2].x - map_origin.x) * cal_x) * -1, (((data.phones[i][2].z - map_origin.z) * cal_z) * -1) - 1)
-        m.write(data.phones[i][1])
+        local posX = ((data.phones[i][2].x - map_origin.x) * cal_x) * -1
+        local posZ = ((data.phones[i][2].z - map_origin.z) * cal_z) * -1
+        local text = tostring(math.floor(data.phones[i][1]))
+        draw_centered_text(posX, posZ, text, colors.white, col[i])
     end
 end 
 
